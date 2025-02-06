@@ -16,15 +16,21 @@ Dataset 2: Average Ticket Fare Data (2000-2024)
 
 4. Planned Methodology
 
-Step 1: Data Preprocessing & Exploratory Data Analysis (EDA)
-Step 2: Feature Engineering & Data Transformation
-Step 3: Forecasting Models for Airline Revenue
-Step 4: Forecasting Models for Ticket Prices
-Step 5: Model Evaluation & Selection
-Step 6: Impact Analysis of External Factors
-Step 7: Final Report & Deployment
+  Step 1: Data Preprocessing & Exploratory Data Analysis (EDA)
+  
+  Step 2: Feature Engineering & Data Transformation
+  
+  Step 3: Forecasting Models for Airline Revenue
+  
+  Step 4: Forecasting Models for Ticket Prices
+  
+  Step 5: Model Evaluation & Selection
+  
+  Step 6: Impact Analysis of External Factors
+  
+  Step 7: Final Report & Deployment
 
-5. Expected Deliverables
+6. Expected Deliverables
 - Code & Repository
 - Forecasting Results
 - Statistical & Business Insights
