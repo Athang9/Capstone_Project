@@ -1,7 +1,5 @@
 # Turbulence & Triumph: Analyzing Market Volatility and Financial Resilience in the U.S. Airline Industry (2003–2023)
 
-![Airline Resilience Banner](https://athang9.github.io/Airline_Analysis/assets/banner.png) <!-- optional if you have a banner or remove this -->
-
 ---
 
 ## 📈 Project Overview
@@ -59,7 +57,7 @@ An interactive Power BI dashboard was created to visualize:
 - Financial performance comparisons
 - Volatility and resilience scores
 
-📌 [See Dashboard Screenshots ➔](./dashboard/dashboard_description.md)
+📌 [See Dashboard ➔]([./dashboard/dashboard_description.md](https://app.powerbi.com/view?r=eyJrIjoiNTNkYzljNWUtZjQ2ZS00NGI4LTljYTUtOGNkMWEyYjhhNTBlIiwidCI6ImI5MmQyYjIzLTRkMzUtNDQ3MC05M2ZmLTY5YWNhNjYzMmZmZSIsImMiOjF9))
 
 ---
 
@@ -89,7 +87,7 @@ This project is licensed under the **MIT License** — feel free to use, modify,
 ## 🤝 Acknowledgments
 
 Special thanks to:
-- Dr. Sunil Shende (Capstone Director)
+- Dr. Sunil Shende
 - Graduate Program in Data Science, Rutgers University–Camden
 - Bureau of Transportation Statistics and DOT for providing open-access data
 
