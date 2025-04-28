@@ -1,44 +1,35 @@
-# **Flight Ticket Price and Airline Revenue Forecasting for 2025**  
-*Using Historical Data (2000-2024)*  
+# Turbulence & Triumph: Analyzing Market Volatility and Financial Resilience in the U.S. Airline Industry (2003–2023)
 
+## Project Overview
+This project analyzes two decades of U.S. airline industry data (2003–2023) to assess market volatility and financial resilience across major economic crises — the 2008 global financial crisis and the COVID-19 pandemic. Using clustering, trend analysis, volatility computation, and resilience scoring, this study identifies patterns of operational and financial recovery across Legacy, Low-Cost, and Regional carriers.
 
-## **Project Description**  
-This project aims to **forecast airline revenue** and **average ticket fares** for 2025 using historical data from **2000 to 2024**. The dataset includes information on **domestic and international airline revenue** as well as **average and inflation-adjusted ticket fares** across various U.S. airports.  
+## Repository Structure
+- `/report/` — Final capstone report (PDF and LaTeX source).
+- `/data/` — Processed datasets used for analysis (samples only).
+- `/notebooks/` — Jupyter notebooks for data processing, clustering, trend analysis, and resilience scoring.
+- `/figures/` — Visualizations generated from the analyses.
+- `/dashboard/` — Power BI dashboard screenshots and overview.
+- `requirements.txt` — Python libraries used for the analysis.
 
-This analysis will help:  
-✅ **Understand revenue trends** in the airline industry.  
-✅ **Predict price fluctuations** based on historical patterns.  
-✅ **Assess the impact of external factors** such as economic recessions, pandemics, and geopolitical events.  
+## Key Techniques
+- K-Means Clustering
+- Time-Series Trend Analysis
+- Volatility Measurement
+- Composite Resilience Scoring
+- Data Visualization using Matplotlib and Power BI
 
----
+## Results Highlights
+- Low-Cost carriers gained significant market share post-2008 but showed higher volatility during COVID-19.
+- Legacy carriers recovered financial stability faster due to diversified operations and government support.
+- Regional carriers remained the most vulnerable throughout both crises.
 
-## **Dataset Used**  
-### **Dataset 1: Airline Revenue Data (2000-2024)**  
-- **Columns**: `Year`, `Month`, `Domestic Revenue`, `International Revenue`, `Total Revenue`  
-- **Purpose**: Forecast airline revenue for 2025 based on past trends.  
-- **Source**: [Bureau of Transportation Statistics](https://www.transtats.bts.gov/data_elements.aspx)  
+## Dashboard
+An interactive Power BI dashboard visualizes the key metrics. (See `/dashboard/` folder for screenshots and overview.)
 
-### **Dataset 2: Average Ticket Fare Data (2000-2024)**  
-- **Columns**: `Airport Code`, `City Name`, `State Name`, `Average Fare ($)`, `Inflation-Adjusted Average Fare ($) (Base Quarter: Q3-2024)`  
-- **Purpose**: Forecast average fares for 2025 while considering inflation adjustments.  
-- **Source**: [Bureau of Transportation Statistics - Average Fare](https://www.transtats.bts.gov/AverageFare/)  
+## License
+MIT License.
 
----
-
-## **Planned Methodology**  
-This project will use **time series forecasting** and **machine learning techniques** to predict airline revenue and ticket prices.  
-
-### 📌 **Step 1: Data Preprocessing & Exploratory Data Analysis (EDA)**  
-### 📌 **Step 2: Feature Engineering & Data Transformation**  
-### 📌 **Step 3: Forecasting Models for Airline Revenue**  
-### 📌 **Step 4: Forecasting Models for Ticket Prices**  
-### 📌 **Step 5: Model Evaluation & Selection**  
-### 📌 **Step 6: Impact Analysis of External Factors**  
-### 📌 **Step 7: Final Report & Deployment**  
-
----
-
-## **Expected Deliverables**  
-✅ **Code & Repository**: (https://github.com/Athang9/Capstone_Project)  
-✅ **Forecasting Results**: Revenue & ticket price predictions for 2025  
-✅ **Report & Documentation**: Markdown-based report, converted to PDF using Pandoc/Quarto  
+## Acknowledgments
+- Bureau of Transportation Statistics (BTS)
+- U.S. Department of Transportation (DOT)
+- Securities and Exchange Commission (SEC)
