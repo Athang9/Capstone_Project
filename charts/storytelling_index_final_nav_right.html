@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Turbulence & Triumph - Final Navigation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #205375;
+      --accent: #EFEFEF;
+      --highlight: #95B8D1;
+      --text: #1a1a1a;
+      --background: #FAFAFA;
+    }
+    * { box-sizing: border-box; scroll-behavior: smooth; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      margin: 0;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--primary);
+      color: white;
+      padding: 1.5rem 2rem;
+    }
+    .topbar h1 {
+      font-size: 1.75rem;
+      margin: 0;
+    }
+    .menu-toggle {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    .sidebar {
+      width: 250px;
+      background: var(--primary);
+      color: white;
+      position: fixed;
+      top: 0;
+      right: -250px;
+      height: 100%;
+      padding: 2rem 1rem;
+      transition: right 0.3s;
+      z-index: 1000;
+    }
+    .sidebar.open {
+      right: 0;
+    }
+    .sidebar h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      margin-bottom: 1rem;
+    }
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      display: block;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+    .sidebar a:hover {
+      background-color: var(--highlight);
+    }
+    main {
+      padding: 2rem;
+      margin-left: 0;
+    }
+    .page {
+      display: none;
+    }
+    .page.active {
+      display: block;
+    }
+    section {
+      max-width: 1100px;
+      margin: auto;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+    .chart-container {
+      height: 60vh;
+      width: 60vw;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 1rem;
+    }
+    .chart-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .insight {
+      background: var(--highlight);
+      padding: 1rem;
+      border-left: 4px solid var(--primary);
+      color: #fff;
+      font-weight: 500;
+      font-style: italic;
+    }
+    select {
+      padding: 6px 10px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+    .chapter-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    .chapter-links a {
+      background: var(--accent);
+      padding: 6px 12px;
+      border-radius: 5px;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .chapter-links a:hover {
+      background: var(--highlight);
+      color: white;
+    }
+  </style>
+  <script>
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('open');
+    }
+    function closeSidebar() {
+      document.querySelector('.sidebar').classList.remove('open');
+    }
+    function showPage(pageId) {
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      closeSidebar();
+    }
+    function filterChapters() {
+      const selected = document.getElementById("filterSelect").value;
+      const sections = document.querySelectorAll("#analysisPage section.chapter");
+      sections.forEach(sec => {
+        sec.style.display = (selected === "All" || sec.dataset.type === selected) ? "block" : "none";
+      });
+    }
+    window.onload = function() {
+      showPage('introPage');
+    };
+  </script>
+</head>
+<body>
+
+<div class="sidebar" id="navSidebar">
+  <h2>Navigation</h2>
+  <ul>
+    <li><a href="#" onclick="showPage('introPage')">📌 Introduction</a></li>
+    <li><a href="#" onclick="showPage('analysisPage')">📊 Analysis</a></li>
+    <li><a href="#" onclick="showPage('powerBIDashboard')">📈 Power BI Dashboard</a></li>
+  </ul>
+</div>
+
+<div class="topbar">
+  <h1>Turbulence & Triumph</h1>
+  <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+</div>
+
+<main>
+  <div id="introPage" class="page active">
+    <section>
+      <h2>Project Overview</h2>
+      <p>This project explores airline resilience from 2003–2023 by analyzing key financial and passenger trends before, during, and after crises.</p>
+    </section>
+  </div>
+
+  <div id="analysisPage" class="page">
+    <section>
+      <h2>Filter Chapters & Navigate</h2>
+      <select id="filterSelect" onchange="filterChapters()">
+        <option value="All">All</option>
+        <option value="Passenger">Passenger</option>
+        <option value="Revenue">Revenue</option>
+        <option value="Net Income">Net Income</option>
+        <option value="Performance">Performance</option>
+      </select>
+      <div class="chapter-links">
+<a href="#chapter0">Passenger Growth Over Time</a>
+<a href="#chapter1">Passenger Growth Over Time</a>
+<a href="#chapter2">Passenger Growth Over Time</a>
+<a href="#chapter3">Passenger Market Share Over Time</a>
+<a href="#chapter4">Market Share Volatility</a>
+<a href="#chapter5">Net Income Over Time</a>
+<a href="#chapter6">Net Income Trends</a>
+<a href="#chapter7">Operating Revenue Over Time</a>
+<a href="#chapter8">Operating Revenue Trends</a>
+<a href="#chapter9">Normalized Passenger Growth Over Time</a>
+<a href="#chapter10">Performance Index</a>
+<a href="#chapter11">Financial Resilience Comparison- 2008-2010 vs 2019-2022</a>
+
+    <section class="chapter" id="chapter0" data-type="Passenger">
+      <h2>Passenger Growth Over Time by Cluster 0</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Passenger Growth Over Time by Cluster 0.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Low-cost carriers like Spirit and Frontier showed rapid growth here, recovering faster post-COVID.</div>
+    </section>
+
+    <section class="chapter" id="chapter1" data-type="Passenger">
+      <h2>Passenger Growth Over Time by Cluster 1</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Passenger Growth Over Time by Cluster 1.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> This cluster reveals moderate, stable growth typical of legacy carriers.</div>
+    </section>
+
+    <section class="chapter" id="chapter2" data-type="Passenger">
+      <h2>Passenger Growth Over Time by Cluster 2</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Passenger Growth Over Time by Cluster 2.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Regional airlines struggled to recover, reflecting limited growth capabilities.</div>
+    </section>
+
+    <section class="chapter" id="chapter3" data-type="Passenger">
+      <h2>Passenger Market Share Over Time by Cluster (Legacy, Low-cost, Regional)</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Passenger Market Share Over Time by Cluster (Legacy, Low-cost, Regional).html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Major airlines retained dominance but low-cost carriers gained ground post-2020.</div>
+    </section>
+
+    <section class="chapter" id="chapter4" data-type="Performance">
+      <h2>Market Share Volatility</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Market Share Volatility.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Spirit Airlines showed the highest volatility, indicating inconsistent market strategy.</div>
+    </section>
+
+    <section class="chapter" id="chapter5" data-type="Net Income">
+      <h2>Net Income Over Time by Cluster (Legacy, Low-cost, Regional)</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Net Income Over Time by Cluster (Legacy, Low-cost, Regional).html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Low-cost carriers demonstrated superior recovery in net income after crises.</div>
+    </section>
+
+    <section class="chapter" id="chapter6" data-type="Net Income">
+      <h2>Net Income Trends by Individual Airline</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Net Income Trends by Individual Airline.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Legacy airlines have shown mixed trends, while regional players remained financially weak.</div>
+    </section>
+
+    <section class="chapter" id="chapter7" data-type="Revenue">
+      <h2>Operating Revenue Over Time by Cluster (Legacy, Low-cost, Regional)</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Operating Revenue Over Time by Cluster (Legacy, Low-cost, Regional).html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Revenue trends closely track passenger share, especially for low-cost airlines.</div>
+    </section>
+
+    <section class="chapter" id="chapter8" data-type="Revenue">
+      <h2>Operating Revenue Trends by Individual Airline</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Operating Revenue Trends by Individual Airline.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Southwest and Delta maintain strong operating revenues, outperforming others.</div>
+    </section>
+
+    <section class="chapter" id="chapter9" data-type="Passenger">
+      <h2>Normalized Passenger Growth Over Time by Individual Airline</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Normalized Passenger Growth Over Time by Individual Airline.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Allegiant and Frontier led in volume-based growth while regional airlines trailed.</div>
+    </section>
+
+    <section class="chapter" id="chapter10" data-type="Performance">
+      <h2>Performance Index by Individual Airline (2003-2023)</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Performance Index by Individual Airline (2003-2023).html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> JetBlue sits at the hybrid edge; Frontier and Allegiant are growth-driven but volatile.</div>
+    </section>
+
+    <section class="chapter" id="chapter11" data-type="Performance">
+      <h2>Financial Resilience Comparison- 2008-2010 vs 2019-2022</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Financial Resilience Comparison- 2008-2010 vs 2019-2022.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Low-cost carriers outperformed legacy and regional airlines in post-crisis recovery.</div>
+    </section>
+
+    </div>
+  </div>
+
+  <div id="powerBIDashboard" class="page">
+    <section>
+      <h2>Power BI Dashboard</h2>
+      <p>This page will embed an interactive Power BI dashboard as a final visualization layer.</p>
+    </section>
+  </div>
+
+  <footer>
+    &copy; 2025 Airline Storytelling Project — Built for clarity, performance & insight.
+  </footer>
+</main>
+</body>
+</html>

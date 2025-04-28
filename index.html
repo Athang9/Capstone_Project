@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Turbulence & Triumph - Final Navigation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #205375;
+      --accent: #EFEFEF;
+      --highlight: #95B8D1;
+      --text: #1a1a1a;
+      --background: #FAFAFA;
+    }
+    * { box-sizing: border-box; scroll-behavior: smooth; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      margin: 0;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--primary);
+      color: white;
+      padding: 1.5rem 2rem;
+    }
+    .topbar h1 {
+      font-size: 1.75rem;
+      margin: 0;
+    }
+    .menu-toggle {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    .sidebar {
+      width: 250px;
+      background: var(--primary);
+      color: white;
+      position: fixed;
+      top: 0;
+      right: -250px;
+      height: 100%;
+      padding: 2rem 1rem;
+      transition: right 0.3s;
+      z-index: 1000;
+    }
+    .sidebar.open {
+      right: 0;
+    }
+    .sidebar h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      margin-bottom: 1rem;
+    }
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      display: block;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+    .sidebar a:hover {
+      background-color: var(--highlight);
+    }
+    main {
+      padding: 2rem;
+      margin-left: 0;
+    }
+    .page {
+      display: none;
+    }
+    .page.active {
+      display: block;
+    }
+    section {
+      max-width: 1100px;
+      margin: auto;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+    .chart-container {
+      height: 71.5vh;
+      width: 71.5vw;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 1rem;
+    }
+    .chart-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .insight {
+      background: var(--highlight);
+      padding: 1rem;
+      border-left: 4px solid var(--primary);
+      color: #000;
+      font-weight: 500;
+      font-style: italic;
+    }
+    select {
+      padding: 6px 10px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+    .chapter-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    .chapter-links a {
+      background: var(--accent);
+      padding: 6px 12px;
+      border-radius: 5px;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .chapter-links a:hover {
+      background: var(--highlight);
+      color: white;
+    }
+  </style>
+  <script>
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('open');
+    }
+    function closeSidebar() {
+      document.querySelector('.sidebar').classList.remove('open');
+    }
+    function showPage(pageId) {
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      closeSidebar();
+    }
+    function filterChapters() {
+      const selected = document.getElementById("filterSelect").value;
+      const sections = document.querySelectorAll("#analysisPage section.chapter");
+      sections.forEach(sec => {
+        sec.style.display = (selected === "All" || sec.dataset.type === selected) ? "block" : "none";
+      });
+    }
+    window.onload = function() {
+      showPage('introPage');
+    };
+  </script>
+</head>
+<body>
+
+<div class="sidebar" id="navSidebar">
+  <h2>Navigation</h2>
+  <ul>
+    <li><a href="#" onclick="showPage('introPage')">📌 Introduction</a></li>
+    <li><a href="#" onclick="showPage('analysisPage')">📊 Analysis</a></li>
+    <li><a href="#" onclick="showPage('forecastPage')">🔮 Forecasts</a></li>
+    <li><a href="#" onclick="showPage('powerBIDashboard')">📈 Power BI Dashboard</a></li>
+  </ul>
+</div>
+
+<div class="topbar">
+  <h1>Turbulence & Triumph</h1>
+  <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+</div>
+
+<main>
+  
+  
+  <div id="introPage" class="page active">
+    <section>
+      <h1>Project Overview</h1>
+      <p><strong>Turbulence & Triumph</strong> is a comprehensive, data-driven exploration of how the U.S. airline industry responded to two major economic disruptions: the 2008 financial crisis and the COVID-19 pandemic. This project analyzes long-term trends across 20 years (2003–2023) of quarterly data, focusing on passenger volumes, financial performance, and operational recovery across major U.S. airlines.</p>
+      <p>Going beyond short-term financial snapshots or anecdotal narratives, Turbulence & Triumph offers a <strong>longitudinal view</strong> of the airline industry's resilience and adaptability. It investigates the operational and financial trajectories of major airlines, providing valuable insights into industry dynamics, strategic responses, and long-term recovery. The project highlights patterns of resilience, recovery, realignment, and strategic shifts that have reshaped the aviation landscape over two decades.</p>
+    
+      <h2>Scope & Significance</h2>
+      <p>This study identifies <strong>patterns of resilience and vulnerability</strong> across different airline business models—Legacy, Low-Cost (LCC), and Regional—during and after economic crises. By systematically examining pre-, during-, and post-crisis performance, the findings aim to inform stakeholders across aviation, finance, and policy on the <strong>structural strengths and weaknesses</strong> of the U.S. airline sector. The research also offers airlines and investors a comparative framework to guide <strong>future strategic planning and crisis preparedness</strong>.</p>
+    
+      <h2>Dataset Description</h2>
+      <p>The dataset consists of quarterly financial and operational data from 2003 to 2023 for selected U.S. airlines. Aggregated from publicly available sources (such as DOT, SEC filings, and airline investor reports) and curated for time-series and cluster-based analysis, the dataset covers key attributes such as:</p>
+      <ul>
+        <li><strong>Passenger Traffic</strong>: Number of passengers per airline per quarter</li>
+        <li><strong>Net Income</strong>: Profits or losses reported quarterly</li>
+        <li><strong>Operating Revenue</strong>: Total revenue from airline operations</li>
+        <li><strong>Airline Classification</strong>:
+          <ul>
+            <li><strong>Legacy Carriers</strong> (e.g., American, Delta, United)</li>
+            <li><strong>Low-Cost Carriers (LCCs)</strong> (e.g., Southwest, JetBlue, Spirit)</li>
+            <li><strong>Regional Airlines</strong> (e.g., SkyWest, Envoy, Republic)</li>
+          </ul>
+        </li>
+      </ul>
+      <p>This structured dataset enables robust comparative analysis across different airline models and their recovery profiles across two decades.</p>
+    
+      <h2>Research Objectives</h2>
+      <p>The project seeks to answer the following key questions:</p>
+      <ul>
+        <li><strong>Recovery Strength</strong>: Which airline types demonstrated the most robust recovery after major crises, and what factors contributed to their rebound?</li>
+        <li><strong>Market Share Dynamics</strong>: How did airline market share evolve over time, especially during disruption and recovery phases?</li>
+        <li><strong>Financial Resilience</strong>: Which airlines consistently maintained profitability or quickly returned to positive net income after economic shocks?</li>
+        <li><strong>Cluster-Based Insights</strong>: How do structural characteristics within Legacy, LCC, and Regional clusters explain broader industry trends or strategic misalignments?</li>
+      </ul>
+      <p>Ultimately, Turbulence & Triumph aims to reveal how strategic responses during crises shaped long-term competitive positioning.</p>
+    
+      <h2>Analytical Approach</h2>
+      <p>The project employs a <strong>multi-layered analytical framework</strong> integrating visualization, statistical modeling, and comparative analysis:</p>
+      <ul>
+        <li><strong>Trend Analysis</strong>: Time-series plots to visualize trends in passenger counts, revenue, and profits across airlines and clusters, highlighting pre- and post-crisis trajectories.</li>
+        <li><strong>Volatility Tracking</strong>: Measurement of market share volatility and operational disruptions to differentiate between stable performers and highly impacted carriers.</li>
+        <li><strong>Resilience & Performance Indexing</strong>: Construction of indices evaluating financial resilience and operational efficiency over time, ranking airlines within their clusters.</li>
+        <li><strong>Strategic Outlier Identification</strong>: Isolation of airlines that consistently outperformed or underperformed relative to their peers using z-scores, quartile analysis, and visual dashboards.</li>
+        <li><strong>Cluster-Based Comparisons</strong>: Comparative analysis revealing how cost structures, route strategies, and market positioning influenced resilience and recovery.</li>
+      </ul>
+    
+      <h2>Navigation Guide</h2>
+      <p>The site is organized into the following sections, accessible from the sidebar menu:</p>
+      <ul>
+        <li><strong>Introduction</strong> – Background, objectives, and dataset documentation</li>
+        <li><strong>Analysis</strong> – Interactive visualizations exploring trends and insights</li>
+        <li><strong>Forecasts</strong> – Predictive modeling and forward-looking projections (2024–2025)</li>
+        <li><strong>Power BI Dashboard</strong> – Interactive summary dashboards and KPIs</li>
+      </ul>
+    
+      <h2>Technologies Used</h2>
+      <ul>
+        <li><strong>Python (Pandas, NumPy)</strong> – Data wrangling and preprocessing</li>
+        <li><strong>Plotly</strong> – Interactive chart generation and data storytelling</li>
+        <li><strong>HTML & CSS</strong> – Website design, styling, and layout</li>
+        <li><strong>Power BI</strong> – Advanced dashboard visualization and KPI reporting</li>
+      </ul>
+    
+      <h2>Conclusion & Impact</h2>
+      <p><strong>Turbulence & Triumph</strong> provides a structured lens into how the U.S. airline industry weathered two generational disruptions. It identifies resilience patterns, financial vulnerabilities, and strategic missteps that have shaped the sector's evolution.</p>
+      <p>The findings have direct implications for:</p>
+      <ul>
+        <li><strong>Policy Development</strong>: Informing regulatory bodies on how to support industry stability.</li>
+        <li><strong>Investor Insight</strong>: Helping analysts understand airline risk profiles and future growth potential.</li>
+        <li><strong>Strategic Planning</strong>: Offering airlines a benchmark to improve resilience against future economic disruptions.</li>
+      </ul>
+    </section>
+        
+  </div>
+
+
+  <div id="analysisPage" class="page">
+    <section>
+      <h2>Filter Chapters & Navigate</h2>
+      <select id="filterSelect" onchange="filterChapters()">
+        <option value="All">All</option>
+        <option value="Passenger">Passenger</option>
+        <option value="Revenue">Revenue</option>
+        <option value="Net Income">Net Income</option>
+        <option value="Performance">Performance</option>
+      </select>
+      <div class="chapter-links">
+<a href="#chapter0">Passenger Growth Over Time</a>
+<a href="#chapter1">Passenger Growth Over Time</a>
+<a href="#chapter2">Passenger Growth Over Time</a>
+<a href="#chapter3">Passenger Market Share Over Time</a>
+<a href="#chapter4">Market Share Volatility</a>
+<a href="#chapter5">Net Income Over Time</a>
+<a href="#chapter6">Net Income Trends</a>
+<a href="#chapter7">Operating Revenue Over Time</a>
+<a href="#chapter8">Operating Revenue Trends</a>
+<a href="#chapter9">Normalized Passenger Growth Over Time</a>
+<a href="#chapter10">Performance Index</a>
+<a href="#chapter11">Financial Resilience Comparison- 2008-2010 vs 2019-2022</a>
+
+    <section class="chapter" id="chapter0" data-type="Passenger">
+      <h2>Passenger Growth Over Time by Cluster 0</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Passenger Growth Over Time by Cluster 0.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Cluster 0 includes legacy carriers like Delta and American Airlines. Growth is steady but more conservative, indicating a mature business model less sensitive to rapid demand shifts but more stable over time.</div>
+    </section>
+
+    <section class="chapter" id="chapter1" data-type="Passenger">
+      <h2>Passenger Growth Over Time by Cluster 1</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Passenger Growth Over Time by Cluster 1.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong>  Cluster 1 represents low-cost carriers such as Spirit and Frontier. These airlines demonstrated aggressive passenger growth post-2008 and particularly post-COVID, reflecting a business model focused on affordability and volume. </div>
+    </section>
+
+    <section class="chapter" id="chapter2" data-type="Passenger">
+      <h2>Passenger Growth Over Time by Cluster 2</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Passenger Growth Over Time by Cluster 2.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Cluster 2 represents regional airlines. The chart shows significantly slower growth and deeper drops during crises, highlighting limited market power and vulnerability in the face of disruptions.</div>
+    </section>
+
+    <section class="chapter" id="chapter3" data-type="Passenger">
+      <h2>Passenger Market Share Over Time by Cluster (Legacy, Low-cost, Regional)</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Passenger Market Share Over Time by Cluster (Legacy, Low-cost, Regional).html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Legacy airlines held a dominant market share throughout, but low-cost carriers consistently gained ground over the 20-year period. Regional carriers maintained a minor and mostly stable share.</div>
+    </section>
+
+    <section class="chapter" id="chapter4" data-type="Performance">
+      <h2>Market Share Volatility</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Market Share Volatility.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Spirit Airlines exhibited the highest market share volatility, consistent with its aggressive expansion model. Alaska and Hawaiian Airlines maintained low volatility, suggesting operational stability and consistent demand.</div>
+    </section>
+
+    <section class="chapter" id="chapter5" data-type="Net Income">
+      <h2>Net Income Over Time by Cluster (Legacy, Low-cost, Regional)</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Net Income Over Time by Cluster (Legacy, Low-cost, Regional).html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Low-cost carriers recovered their net income more quickly after both the 2008 and COVID-19 crises. Legacy airlines showed slower recovery but higher income overall, while regional carriers remained in a weak financial position.</div>
+    </section>
+
+    <section class="chapter" id="chapter6" data-type="Net Income">
+      <h2>Net Income Trends by Individual Airline</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Net Income Trends by Individual Airline.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Major carriers like Delta and United have a cyclical net income trend that mirrors macroeconomic events. In contrast, smaller or regional airlines showed inconsistent or flat performance.</div>
+    </section>
+
+    <section class="chapter" id="chapter7" data-type="Revenue">
+      <h2>Operating Revenue Over Time by Cluster (Legacy, Low-cost, Regional)</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Operating Revenue Over Time by Cluster (Legacy, Low-cost, Regional).html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Revenue trends closely mirror passenger growth across clusters. Low-cost carriers show a steeper rebound curve post-COVID, signaling quick recovery and demand attraction.
+
+      </div>
+    </section>
+
+    <section class="chapter" id="chapter8" data-type="Revenue">
+      <h2>Operating Revenue Trends by Individual Airline</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Operating Revenue Trends by Individual Airline.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Legacy airlines such as Delta and American generated consistently higher revenue, while carriers like JetBlue and Spirit, though lower overall, show faster relative growth.
+
+      </div>
+    </section>
+
+    <section class="chapter" id="chapter9" data-type="Passenger">
+      <h2>Normalized Passenger Growth Over Time by Individual Airline</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Normalized Passenger Growth Over Time by Individual Airline.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> Frontier and Allegiant show strong relative growth, outpacing many larger carriers on a percentage basis. This emphasizes the expansion success of low-cost carriers in underserved or price-sensitive markets.</div>
+    </section>
+
+    <section class="chapter" id="chapter10" data-type="Performance">
+      <h2>Performance Index by Individual Airline (2003-2023)</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Performance Index by Individual Airline (2003-2023).html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> JetBlue exhibits a hybrid performance—between legacy and low-cost. Frontier and Allegiant stand out in growth but are more volatile. Regional airlines remain at the bottom end of the index.</div>
+    </section>
+
+    <section class="chapter" id="chapter11" data-type="Performance">
+      <h2>Financial Resilience Comparison- 2008-2010 vs 2019-2022</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Financial Resilience Comparison- 2008-2010 vs 2019-2022.html" class="chart-frame"></object>
+      </div>
+      <div class="insight"><strong>Insight:</strong> The COVID-19 crisis had a steeper but shorter impact compared to 2008. Low-cost carriers demonstrated the most effective financial rebound, highlighting strong operational adaptability.</div>
+    </section>
+
+    </div>
+  </div>
+  <div id="forecastPage" class="page">
+    <section>
+      <h2 style="font-size: 26px; margin-bottom: 1rem;">Forecasts and Predictions (2024–2025)</h2>
+      <p style="font-size: 16px; line-height: 1.6; color: #555;">
+        Using time-series modeling techniques, we have forecasted future trends in passenger traffic, revenue, and net income for the U.S. airline industry clusters. This predictive analysis provides a forward-looking view into industry recovery and growth patterns post-pandemic.
+      </p>
+    </section>
+  
+    <!-- Passenger Forecast Chart -->
+    <section>
+      <h2>Passenger Forecast (2024–2025)</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Passenger Forecast by Airline Group.html" class="chart-frame"></object>
+      </div>
+      <div class="insight">
+        <strong>Insight:</strong> Passenger volumes are expected to recover steadily across all clusters, with Low-Cost Carriers leading in growth rate. Legacy carriers demonstrate consistent but slower growth patterns post-pandemic.
+      </div>
+    </section>
+  
+    <!-- Revenue Forecast Chart -->
+    <section>
+      <h2>Revenue Forecast (2024–2025)</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Revenue Forecast by Airline Group.html" class="chart-frame"></object>
+      </div>
+      <div class="insight">
+        <strong>Insight:</strong> Revenue projections show a strong rebound for Legacy airlines, aligning with their dominant market share. LCCs also show significant revenue improvements fueled by increasing passenger volumes.
+      </div>
+    </section>
+  
+    <!-- Net Income Forecast Chart -->
+    <section>
+      <h2>Net Income Forecast (2024–2025)</h2>
+      <div class="chart-container">
+        <object type="text/html" data="charts/Net Income Forecast by Airline Group.html" class="chart-frame"></object>
+      </div>
+      <div class="insight">
+        <strong>Insight:</strong> Net income forecasts suggest that while Legacy airlines will recover profitability faster, Regional airlines might continue facing margin pressure. LCCs show promising improvements in net income efficiency.
+      </div>
+    </section>
+  
+    <section style="background: #f9fafb; padding: 30px; border-radius: 10px; box-shadow: 0px 4px 12px rgba(0,0,0,0.08); margin-top: 2rem;">
+      <h2>Forecasting Approach and Evaluation</h2>
+    
+      <p style="font-size: 16px; line-height: 1.7;">
+        Our airline forecasts were built using the <strong>Exponential Smoothing (ETS)</strong> model, a robust method for modeling seasonality and trend behavior in time-series data. ETS was chosen for its balance of simplicity, speed, and reliability — especially suited for quarterly airline performance data where clear seasonal and trend effects exist.
+      </p>
+    
+      <h3 style="margin-top: 20px; font-size: 20px;">Evaluation Metrics Summary:</h3>
+    
+      <ul style="font-size: 16px; line-height: 1.7; margin-left: 20px;">
+        <li><strong>MAPE (Mean Absolute Percentage Error)</strong> was used to judge forecast quality.</li>
+        <li>Passenger and Revenue forecasts achieved strong predictive accuracy (MAPE between 5–12%).</li>
+        <li>Net Income forecasts showed high error (>250% MAPE) — typical given external volatility in the airline industry.</li>
+      </ul>
+    
+      <h3 style="margin-top: 20px; font-size: 20px;">Cluster-wise Performance:</h3>
+    
+      <ul style="font-size: 16px; line-height: 1.7; margin-left: 20px;">
+        <li><strong>Legacy Carriers:</strong> Passenger (10.12% MAPE), Revenue (10.37% MAPE) — strong and stable forecasts.</li>
+        <li><strong>Low-Cost Carriers (LCC):</strong> Passenger (11.62%), Revenue (5.24%) — highest revenue model strength.</li>
+        <li><strong>Regional Carriers:</strong> Passenger (11.21%), Revenue (6.04%) — consistent but smaller scale forecasts.</li>
+      </ul>
+    
+      <p style="font-size: 16px; line-height: 1.7;">
+        Net income remained difficult to predict reliably due to sudden profit/loss swings caused by external factors like fuel prices, pandemics, and labor disruptions — a known challenge even in professional airline financial forecasting.
+      </p>
+    
+      <h3 style="margin-top: 20px; font-size: 20px;">Concluding Statement:</h3>
+    
+      <p style="font-size: 16px; line-height: 1.7;">
+        Overall, our final airline forecasting models demonstrated robust performance for strategic metrics (Passenger Traffic and Operational Revenue), while highlighting the complexity of predicting profitability in a turbulent industry. These forecasts can help airlines and analysts anticipate growth trajectories, allocate resources efficiently, and plan resilient business strategies into 2025 and beyond.
+      </p>
+    
+      <h3 style="margin-top: 20px; font-size: 20px;">Future Enhancements:</h3>
+    
+      <p style="font-size: 16px; line-height: 1.7;">
+        Future modeling efforts could integrate external macroeconomic indicators (such as oil prices, GDP growth rates, and tourism indexes) to enhance net income forecasting. Additionally, employing machine learning-based time series models (e.g., Prophet, LSTM) could capture more complex nonlinear patterns if larger datasets were available.
+      </p>
+    
+    </section>
+  </div>
+  
+  <div id="powerBIDashboard" class="page">
+    <section>
+      <h2>Power BI Dashboard</h2>
+      <div style="text-align: center; margin: 30px;">
+        <iframe 
+          width="1000" 
+          height="800" 
+          src="https://app.powerbi.com/view?r=eyJrIjoiNTNkYzljNWUtZjQ2ZS00NGI4LTljYTUtOGNkMWEyYjhhNTBlIiwidCI6ImI5MmQyYjIzLTRkMzUtNDQ3MC05M2ZmLTY5YWNhNjYzMmZmZSIsImMiOjF9" 
+          frameborder="0" 
+          allowFullScreen="true">
+        </iframe>
+      </div>
+      <div style="max-width: 1000px; margin: 40px auto; padding: 30px; font-family: 'Segoe UI', sans-serif; background-color: #f9fafb; border-radius: 10px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); color: #333;">
+  
+        <h1 style="text-align: center; font-size: 28px; margin-bottom: 30px; color: #030c27;">
+          Airline Industry Dashboard Insights (2003–2023)
+        </h1>
+      
+        <div style="margin-bottom: 25px;">
+          <h2 style="font-size: 20px; color: #030c27;">Passenger Volume and Revenue Growth (Area Chart)</h2>
+          <p style="font-size: 16px; line-height: 1.6; margin-top: 8px;">
+            Despite setbacks during the 2008 financial crisis and the 2020 pandemic, overall passenger volumes and revenues have steadily grown over two decades, reflecting the industry's strong recovery capability.
+          </p>
+        </div>
+      
+        <div style="margin-bottom: 25px;">
+          <h2 style="font-size: 20px; color: #030c27;">Cluster-Wise Passenger Market Share (100% Stacked Bar)</h2>
+          <p style="font-size: 16px; line-height: 1.6; margin-top: 8px;">
+            Legacy carriers maintained a majority share throughout the timeline, but Low-Cost Carriers (LCCs) gained noticeable market presence post-2010, reshaping competitive dynamics in the airline industry.
+          </p>
+        </div>
+      
+        <div style="margin-bottom: 25px;">
+          <h2 style="font-size: 20px; color: #030c27;">Financial Health Scorecard (Radar Chart)</h2>
+          <p style="font-size: 16px; line-height: 1.6; margin-top: 8px;">
+            LCCs lead in revenue efficiency and resilience scores, while Legacy carriers demonstrate higher absolute revenue but thinner profit margins.
+          </p>
+        </div>
+      
+        <div style="margin-bottom: 25px;">
+          <h2 style="font-size: 20px; color: #030c27;">Net Income Impact Analysis: COVID-19 (Sankey Chart)</h2>
+          <p style="font-size: 16px; line-height: 1.6; margin-top: 8px;">
+            The 2020 pandemic resulted in a sharp collapse in net income across all airline clusters, with Regional airlines showing relatively less financial disruption compared to Legacy and LCC players.
+          </p>
+        </div>
+      
+        <div style="margin-bottom: 25px;">
+          <h2 style="font-size: 20px; color: #030c27;">Cluster Revenue Distribution (Treemap)</h2>
+          <p style="font-size: 16px; line-height: 1.6; margin-top: 8px;">
+            Legacy carriers collectively dominate the total industry revenue landscape, whereas Regional airlines account for the smallest proportional share.
+          </p>
+        </div>
+      
+        <div style="margin-bottom: 25px;">
+          <h2 style="font-size: 20px; color: #030c27;">Cluster Revenue Trends Over Time (Bubble/Scatter)</h2>
+          <p style="font-size: 16px; line-height: 1.6; margin-top: 8px;">
+            Legacy clusters exhibit steady revenue growth with moderate volatility, while Regional clusters maintained relatively stable but lower revenue levels throughout the timeline.
+          </p>
+        </div>
+      
+      </div>      
+    </section>
+  </div>
+
+  <footer>
+    &copy; 2025 Airline Storytelling Project — Built for clarity, performance & insight.
+  </footer>
+</main>
+</body>
+</html>
