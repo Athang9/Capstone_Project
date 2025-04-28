@@ -19,10 +19,6 @@ Key questions addressed:
 | Folder/File | Description |
 |:------------|:------------|
 | `/report/` | Final capstone report (PDF and LaTeX source). |
-| `/data/` | Processed datasets (sampled if necessary). |
-| `/notebooks/` | Jupyter notebooks for each stage of the analysis (preprocessing, clustering, trend analysis, scoring). |
-| `/figures/` | Visualizations and plots used in the report and dashboard. |
-| `/dashboard/` | Power BI dashboard screenshots and overview documentation. |
 | `requirements.txt` | Python libraries required for running the notebooks. |
 | `LICENSE` | Open-source MIT license. |
 
