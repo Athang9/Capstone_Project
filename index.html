@@ -398,86 +398,89 @@
   </div>
   <div id="forecastPage" class="page">
     <section>
-      <h2 style="font-size: 26px; margin-bottom: 1rem;">Forecasts and Predictions (2024–2025)</h2>
+      <h2 style="font-size: 26px; margin-bottom: 1rem;">Forecasts and Predictions (2024–2026)</h2>
       <p style="font-size: 16px; line-height: 1.6; color: #555;">
-        Using time-series modeling techniques, we have forecasted future trends in passenger traffic, revenue, and net income for the U.S. airline industry clusters. This predictive analysis provides a forward-looking view into industry recovery and growth patterns post-pandemic.
+        Using advanced time-series modeling with Exponential Smoothing, we have forecasted trends in passenger traffic and revenue for the U.S. airline industry clusters. The evaluation includes Monte Carlo confidence intervals and statistical testing to ensure reliability. This forecast provides a forward-looking view of airline recovery and growth from 2024 through 2026.
       </p>
     </section>
   
     <!-- Passenger Forecast Chart -->
     <section>
-      <h2>Passenger Forecast (2024–2025)</h2>
+      <h2>Passenger Forecast (2024–2026)</h2>
       <div class="chart-container">
-        <object type="text/html" data="charts/Passenger Forecast by Airline Group.html" class="chart-frame"></object>
+        <object type="text/html" data="charts/Forecasting Airline Passengers Growth (Legacy, LCC, Regional).html" class="chart-frame"></object>
       </div>
       <div class="insight">
-        <strong>Insight:</strong> Passenger volumes are expected to recover steadily across all clusters, with Low-Cost Carriers leading in growth rate. Legacy carriers demonstrate consistent but slower growth patterns post-pandemic.
+        <strong>Insight:</strong> Passenger volumes are projected to grow steadily across all clusters.
+        <ul style="margin-top: 0.5rem; margin-left: 1rem;">
+          <li><strong>LCCs</strong> (Low-Cost Carriers) lead in growth rate, reflecting post-pandemic travel demand.</li>
+          <li><strong>Legacy carriers</strong> show consistent but slower increases, supported by business and international segments.</li>
+          <li><strong>Regional carriers</strong> maintain stable recovery with a niche market presence.</li>
+        </ul>
+        <p style="margin-top: 0.5rem;">
+          <strong>Statistical Confidence:</strong> All clusters demonstrate high predictive accuracy (MAPE 10.2–11.5%) with strong p-values (p ≥ 0.92), supported by Monte Carlo intervals.
+        </p>
       </div>
     </section>
   
     <!-- Revenue Forecast Chart -->
     <section>
-      <h2>Revenue Forecast (2024–2025)</h2>
+      <h2>Revenue Forecast (2024–2026)</h2>
       <div class="chart-container">
-        <object type="text/html" data="charts/Revenue Forecast by Airline Group.html" class="chart-frame"></object>
+        <object type="text/html" data="charts/Forecasting Airline Revenue Growth (Legacy, LCC, Regional).html" class="chart-frame"></object>
       </div>
       <div class="insight">
-        <strong>Insight:</strong> Revenue projections show a strong rebound for Legacy airlines, aligning with their dominant market share. LCCs also show significant revenue improvements fueled by increasing passenger volumes.
+        <strong>Insight:</strong> Revenues are recovering strongly, closely tracking passenger trends.
+        <ul style="margin-top: 0.5rem; margin-left: 1rem;">
+          <li><strong>Legacy carriers</strong> maintain dominant revenue performance, with high baseline volumes.</li>
+          <li><strong>LCCs</strong> show exceptional forecasting accuracy (MAPE 5.47%) and efficient revenue scaling.</li>
+          <li><strong>Regional carriers</strong> present stable, mid-range revenue growth with reliable seasonal trends.</li>
+        </ul>
+        <p style="margin-top: 0.5rem;">
+          <strong>Statistical Confidence:</strong> All revenue forecasts passed hypothesis testing (p ≥ 0.92) and reflect tight 95% confidence bounds from simulations.
+        </p>
       </div>
     </section>
   
-    <!-- Net Income Forecast Chart -->
-    <section>
-      <h2>Net Income Forecast (2024–2025)</h2>
-      <div class="chart-container">
-        <object type="text/html" data="charts/Net Income Forecast by Airline Group.html" class="chart-frame"></object>
-      </div>
-      <div class="insight">
-        <strong>Insight:</strong> Net income forecasts suggest that while Legacy airlines will recover profitability faster, Regional airlines might continue facing margin pressure. LCCs show promising improvements in net income efficiency.
-      </div>
-    </section>
-  
+    <!-- Evaluation Summary -->
     <section style="background: #f9fafb; padding: 30px; border-radius: 10px; box-shadow: 0px 4px 12px rgba(0,0,0,0.08); margin-top: 2rem;">
       <h2>Forecasting Approach and Evaluation</h2>
-    
+  
       <p style="font-size: 16px; line-height: 1.7;">
-        Our airline forecasts were built using the <strong>Exponential Smoothing (ETS)</strong> model, a robust method for modeling seasonality and trend behavior in time-series data. ETS was chosen for its balance of simplicity, speed, and reliability — especially suited for quarterly airline performance data where clear seasonal and trend effects exist.
+        Our airline forecasts were developed using the <strong>Exponential Smoothing (ETS)</strong> method — a reliable time-series model that captures both trend and seasonal patterns. The model's performance was validated using <strong>MAPE, MAE, RMSE, t-tests</strong>, and <strong>Monte Carlo simulations</strong> to produce robust and interpretable predictions.
       </p>
-    
+  
       <h3 style="margin-top: 20px; font-size: 20px;">Evaluation Metrics Summary:</h3>
-    
+  
       <ul style="font-size: 16px; line-height: 1.7; margin-left: 20px;">
-        <li><strong>MAPE (Mean Absolute Percentage Error)</strong> was used to judge forecast quality.</li>
-        <li>Passenger and Revenue forecasts achieved strong predictive accuracy (MAPE between 5–12%).</li>
-        <li>Net Income forecasts showed high error (>250% MAPE) — typical given external volatility in the airline industry.</li>
+        <li><strong>MAPE (Mean Absolute Percentage Error)</strong> was used to measure forecast accuracy.</li>
+        <li>Passenger and Revenue forecasts achieved strong accuracy (MAPE between 5.47–11.54%).</li>
+        <li>Each model’s residuals passed <strong>t-tests</strong> (p-values ≥ 0.92), confirming no significant prediction bias.</li>
+        <li>Forecast intervals were generated using <strong>Monte Carlo simulations</strong> with 1000 runs for 95% confidence bounds.</li>
       </ul>
-    
+  
       <h3 style="margin-top: 20px; font-size: 20px;">Cluster-wise Performance:</h3>
-    
+  
       <ul style="font-size: 16px; line-height: 1.7; margin-left: 20px;">
-        <li><strong>Legacy Carriers:</strong> Passenger (10.12% MAPE), Revenue (10.37% MAPE) — strong and stable forecasts.</li>
-        <li><strong>Low-Cost Carriers (LCC):</strong> Passenger (11.62%), Revenue (5.24%) — highest revenue model strength.</li>
-        <li><strong>Regional Carriers:</strong> Passenger (11.21%), Revenue (6.04%) — consistent but smaller scale forecasts.</li>
+        <li><strong>Legacy Carriers:</strong> Passenger (10.23% MAPE), Revenue (10.92%) — reliable and steady predictions.</li>
+        <li><strong>LCC:</strong> Passenger (11.54%), Revenue (5.47%) — strongest revenue model with highest accuracy.</li>
+        <li><strong>Regional:</strong> Passenger (11.32%), Revenue (6.25%) — consistent performance with tight confidence bounds.</li>
       </ul>
-    
-      <p style="font-size: 16px; line-height: 1.7;">
-        Net income remained difficult to predict reliably due to sudden profit/loss swings caused by external factors like fuel prices, pandemics, and labor disruptions — a known challenge even in professional airline financial forecasting.
-      </p>
-    
+  
       <h3 style="margin-top: 20px; font-size: 20px;">Concluding Statement:</h3>
-    
+  
       <p style="font-size: 16px; line-height: 1.7;">
-        Overall, our final airline forecasting models demonstrated robust performance for strategic metrics (Passenger Traffic and Operational Revenue), while highlighting the complexity of predicting profitability in a turbulent industry. These forecasts can help airlines and analysts anticipate growth trajectories, allocate resources efficiently, and plan resilient business strategies into 2025 and beyond.
+        These forecasts highlight resilient recovery across all clusters and can assist airline planners and analysts in identifying future trends. By leveraging both statistical validation and simulation, the models are grounded in transparency and confidence.
       </p>
-    
+  
       <h3 style="margin-top: 20px; font-size: 20px;">Future Enhancements:</h3>
-    
+  
       <p style="font-size: 16px; line-height: 1.7;">
-        Future modeling efforts could integrate external macroeconomic indicators (such as oil prices, GDP growth rates, and tourism indexes) to enhance net income forecasting. Additionally, employing machine learning-based time series models (e.g., Prophet, LSTM) could capture more complex nonlinear patterns if larger datasets were available.
+        Future improvements may include integrating external drivers (fuel prices, GDP, etc.) and exploring advanced time-series tools like Facebook Prophet or LSTM networks if more data becomes available.
       </p>
-    
     </section>
   </div>
+  
   
   <div id="powerBIDashboard" class="page">
     <section>

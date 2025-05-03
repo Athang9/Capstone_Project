@@ -1,7 +1,12 @@
+import warnings
+
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+from scipy.stats import ttest_ind
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+warnings.filterwarnings("ignore")
 
 
 def classify_airline(name):
@@ -241,6 +246,26 @@ def plot_forecast(results, metric_name):
     fig.show()
 
 
-def calculate_mape(actual, fitted):
-    """Calculates Mean Absolute Percentage Error."""
-    return np.mean(np.abs((actual - fitted) / actual)) * 100
+# --- Helper: MAPE ---
+def calculate_mape(actual, predicted):
+    return np.mean(np.abs((actual - predicted) / actual)) * 100
+
+
+def monte_carlo_forecast(forecast, residuals, n_simulations=1000):
+    steps = len(forecast)
+    simulations = np.array(
+        [
+            forecast.values
+            + np.random.choice(residuals, size=steps, replace=True)
+            for _ in range(n_simulations)
+        ]
+    )
+    ci_lower = np.percentile(simulations, 2.5, axis=0)
+    ci_upper = np.percentile(simulations, 97.5, axis=0)
+    return ci_lower, ci_upper
+
+
+# --- Helper: Hypothesis Test ---
+def perform_t_test(actual, forecasted):
+    t_stat, p_val = ttest_ind(actual, forecasted)
+    return p_val

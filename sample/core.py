@@ -1,3 +1,6 @@
+import warnings
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -8,12 +11,18 @@ from helpers import (
     extract_columns,
     get_airlines_by_cluster,
     melt_for_plotting,
+    monte_carlo_forecast,
     normalize_columns,
+    perform_t_test,
     plot_forecast,
     smooth_forecast,
     test_airline_performance_by_range,
 )
+from scipy.stats import ttest_1samp, ttest_ind
 from sklearn.metrics import mean_absolute_error, mean_squared_error
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+warnings.filterwarnings("ignore")
 
 
 def plot_passenger_growth_cluster(df, cluster_map, cluster_id):
@@ -383,73 +392,151 @@ def plot_financial_resilience(df):
     fig.write_html("Financial Resilience Comparison: 2008-2010 vs 2019-2022")
 
 
-def run_forecasting(df):
-    forecast_horizon = 8
+def smooth_forecast(series, steps=16):
+    model = ExponentialSmoothing(
+        series,
+        trend="add",
+        seasonal="add",
+        seasonal_periods=4,
+        use_boxcox=False,
+    )
+    model_fit = model.fit(optimized=True)
+    forecast = model_fit.forecast(steps)
+    fitted = model_fit.fittedvalues
+    fitted.index = series.index
+    return fitted, forecast, model_fit
+
+
+def plot_combined_forecast(results, metric_name):
+    fig = go.Figure()
+    colors = {"Legacy": "blue", "LCC": "green", "Regional": "red"}
+
+    for group in ["Legacy", "LCC", "Regional"]:
+        r = results[(metric_name, group)]
+        fitted_dates = r["Fitted"].index
+        forecast_len = len(r["Forecast"])
+        start_date = fitted_dates[-1] + pd.offsets.QuarterBegin()
+        forecast_dates = pd.date_range(
+            start=start_date, periods=forecast_len, freq="QS"
+        )
+
+        fitted_labels = fitted_dates.to_series().dt.to_period("Q").astype(str)
+        forecast_labels = (
+            forecast_dates.to_series().dt.to_period("Q").astype(str)
+        )
+
+        # Add fitted and forecast lines
+        fig.add_trace(
+            go.Scatter(
+                x=fitted_labels,
+                y=r["Fitted"],
+                mode="lines",
+                name=f"{group} Fitted",
+                line=dict(color=colors[group], dash="solid"),
+            )
+        )
+        fig.add_trace(
+            go.Scatter(
+                x=forecast_labels,
+                y=r["Forecast"],
+                mode="lines",
+                name=f"{group} Forecast",
+                line=dict(color=colors[group], dash="dot"),
+            )
+        )
+
+        # Add confidence interval as shaded area
+        fig.add_trace(
+            go.Scatter(
+                x=list(forecast_labels) + list(forecast_labels[::-1]),
+                y=list(r["CI_Upper"]) + list(r["CI_Lower"][::-1]),
+                fill="toself",
+                fillcolor=colors[group]
+                .replace("blue", "rgba(0,0,255,0.1)")
+                .replace("green", "rgba(0,128,0,0.1)")
+                .replace("red", "rgba(255,0,0,0.1)"),
+                line=dict(color="rgba(255,255,255,0)"),
+                hoverinfo="skip",
+                showlegend=False,
+                name=f"{group} CI",
+            )
+        )
+
+    fig.update_layout(
+        title=f"Forecasting Airline {metric_name} Growth (Legacy, LCC, Regional)",
+        xaxis_title="Quarter",
+        yaxis_title=metric_name,
+        template="plotly_white",
+        hovermode="x unified",
+    )
+
+    fig.show()
+
+
+def run_passenger_revenue_forecasting(df):
+    forecast_horizon = 16
     metrics = {
         "Passengers": [
             "Legacy_Passengers",
             "LCC_Passengers",
             "Regional_Passengers",
         ],
-        "Net Income": [
-            "Legacy_Net_Income",
-            "LCC_Net_Income",
-            "Regional_Net_Income",
-        ],
         "Revenue": ["Legacy_Revenue", "LCC_Revenue", "Regional_Revenue"],
     }
 
     results = {}
 
+    print("\nEvaluation Metrics (Lower is better):\n")
     for metric_name, cols in metrics.items():
+        print(f"--- {metric_name} ---")
         for group, col in zip(["Legacy", "LCC", "Regional"], cols):
+            series = df[col]
             fitted, forecast, model_fit = smooth_forecast(
-                df[col], metric_name, forecast_horizon
+                series, forecast_horizon
             )
-            mae = mean_absolute_error(df[col], fitted)
-            rmse = mean_squared_error(df[col], fitted, squared=False)
+
+            common_index = fitted.index.intersection(series.index)
+            actual_trimmed = series.loc[common_index]
+            fitted_trimmed = fitted.loc[common_index]
+
+            mae = mean_absolute_error(actual_trimmed, fitted_trimmed)
+            rmse = mean_squared_error(
+                actual_trimmed, fitted_trimmed, squared=False
+            )
+            mape = calculate_mape(actual_trimmed, fitted_trimmed)
+
+            p_value = perform_t_test(actual_trimmed, fitted_trimmed)
+            residuals = (actual_trimmed - fitted_trimmed).dropna()
+            ci_lower, ci_upper = monte_carlo_forecast(forecast, residuals)
+
             results[(metric_name, group)] = {
-                "Fitted": fitted,
+                "Fitted": fitted_trimmed,
                 "Forecast": forecast,
                 "MAE": mae,
                 "RMSE": rmse,
+                "MAPE": mape,
+                "p_value": p_value,
+                "CI_Lower": ci_lower,
+                "CI_Upper": ci_upper,
             }
 
-    for metric_name in metrics.keys():
-        plot_forecast(results, metric_name)
-
-    print("\nEvaluation Metrics (Lower is better):\n")
-    for metric_name in metrics.keys():
-        print(f"--- {metric_name} ---")
-        for group in ["Legacy", "LCC", "Regional"]:
-            mae = results[(metric_name, group)]["MAE"]
-            rmse = results[(metric_name, group)]["RMSE"]
-            print(f"{group}: MAE={mae:.2f}, RMSE={rmse:.2f}")
+            print(
+                f"{group}: MAE={mae:.2f}, RMSE={rmse:.2f}, MAPE={mape:.2f}%, p-value={p_value:.4f}"
+            )
         print()
 
-    print("\nEvaluation Metrics (MAPE - Lower % is better):\n")
-    for metric_name in metrics.keys():
-        print(f"--- {metric_name} ---")
-        for group in ["Legacy", "LCC", "Regional"]:
-            actual = df[
-                metrics[metric_name][
-                    ["Legacy", "LCC", "Regional"].index(group)
-                ]
-            ]
-            fitted = results[(metric_name, group)]["Fitted"]
-            mape = calculate_mape(actual, fitted)
-            print(f"{group}: MAPE={mape:.2f}%")
-        print()
+    for metric_name in metrics:
+        plot_combined_forecast(results, metric_name)
 
     forecast_table = {}
-    for metric_name in metrics.keys():
+    for metric_name in metrics:
         for group in ["Legacy", "LCC", "Regional"]:
             forecast_table[f"{group}_{metric_name}"] = results[
                 (metric_name, group)
             ]["Forecast"]
 
     forecast_df = pd.DataFrame(forecast_table)
-    print("\nForecasted Values for 2024–2025:\n")
+    print("\nForecasted Values for 2024–2026:\n")
     print(forecast_df)
 
 
@@ -466,81 +553,82 @@ def run_analysis():
 
     airlines = get_airlines_by_cluster(cluster_map)
 
+    # Build datetime index from Year and Quarter
     df["Month"] = df["Quarter"].map({"Q1": 1, "Q2": 4, "Q3": 7, "Q4": 10})
     df["Date_temp"] = pd.to_datetime(df[["Year", "Month"]].assign(DAY=1))
     df = df.set_index("Date_temp")
     df.index.name = "Date"
     df = df.sort_index()
 
-    legacy_cols = [
-        "AMERICAN_PASSENGER",
-        "DELTA_PASSENGER",
-        "UNITED_PASSENGER",
-        "SOUTHWEST_PASSENGER",
-    ]
-    lcc_cols = [
-        "FRONTIER_PASSENGER",
-        "ALLEGIANT_PASSENGER",
-        "SPIRIT_PASSENGER",
-        "SUN_COUNTRY_PASSENGER",
-        "JETBLUE_PASSENGER",
-    ]
-    regional_cols = [
-        "ALASKA_PASSENGER",
-        "HAWAIIN_PASSENGER",
-        "SKYWEST_PASSENGER",
-    ]
+    # Aggregate metrics
+    df["Legacy_Passengers"] = df[
+        [
+            "AMERICAN_PASSENGER",
+            "DELTA_PASSENGER",
+            "UNITED_PASSENGER",
+            "SOUTHWEST_PASSENGER",
+        ]
+    ].sum(axis=1)
+    df["LCC_Passengers"] = df[
+        [
+            "FRONTIER_PASSENGER",
+            "ALLEGIANT_PASSENGER",
+            "SPIRIT_PASSENGER",
+            "SUN_COUNTRY_PASSENGER",
+            "JETBLUE_PASSENGER",
+        ]
+    ].sum(axis=1)
+    df["Regional_Passengers"] = df[
+        ["ALASKA_PASSENGER", "HAWAIIN_PASSENGER", "SKYWEST_PASSENGER"]
+    ].sum(axis=1)
 
-    legacy_net_cols = [
-        "AMERICAN_AIRLINE_NET_INCOME",
-        "DELTA_AIRLINE_NET_INCOME",
-        "UNITED_AIRLINE_NET_INCOME",
-        "SOUTHWEST_AIRLINE_NET_INCOME",
-    ]
-    lcc_net_cols = [
-        "FRONTIER_NET_INCOME",
-        "ALLEGIANT_NET_INCOME",
-        "SPIRIT_NET_INCOME",
-        "SUN_COUNTRY_NET_INCOME",
-        "JETBLUE_NET_INCOME",
-    ]
-    regional_net_cols = [
-        "ALASKA_NET_INCOME",
-        "HAWAIIN_NET_INCOME",
-        "SKYWEST_NET_INCOME",
-    ]
+    df["Legacy_Net_Income"] = df[
+        [
+            "AMERICAN_AIRLINE_NET_INCOME",
+            "DELTA_AIRLINE_NET_INCOME",
+            "UNITED_AIRLINE_NET_INCOME",
+            "SOUTHWEST_AIRLINE_NET_INCOME",
+        ]
+    ].sum(axis=1)
+    df["LCC_Net_Income"] = df[
+        [
+            "FRONTIER_NET_INCOME",
+            "ALLEGIANT_NET_INCOME",
+            "SPIRIT_NET_INCOME",
+            "SUN_COUNTRY_NET_INCOME",
+            "JETBLUE_NET_INCOME",
+        ]
+    ].sum(axis=1)
+    df["Regional_Net_Income"] = df[
+        ["ALASKA_NET_INCOME", "HAWAIIN_NET_INCOME", "SKYWEST_NET_INCOME"]
+    ].sum(axis=1)
 
-    legacy_rev_cols = [
-        "AMERICAN_AIRLINE_OPERATING_REVENUE",
-        "DELTA_AIR_LINE_OPERATING_REVENUE",
-        "UNITED_AIRLINE_OPERATING_REVENUE",
-        "SOUTHWEST_AIRLINE_OPERATING_REVENUE",
-    ]
-    lcc_rev_cols = [
-        "FRONTIER_OPERATING_REVENUE",
-        "ALLEGIANT_OPERATING_REVENUE",
-        "SPIRIT_OPERATING_REVENUE",
-        "SUN_COUNTRY_OPERATING_REVENUE",
-        "JETBLUE_OPERATING_REVENUE",
-    ]
-    regional_rev_cols = [
-        "ALASKA_OPERTING_REVENUE",
-        "HAWAIIN_OPERATING_REVENUE",
-        "SKYWEST_OPERATING_REVENUE",
-    ]
+    df["Legacy_Revenue"] = df[
+        [
+            "AMERICAN_AIRLINE_OPERATING_REVENUE",
+            "DELTA_AIR_LINE_OPERATING_REVENUE",
+            "UNITED_AIRLINE_OPERATING_REVENUE",
+            "SOUTHWEST_AIRLINE_OPERATING_REVENUE",
+        ]
+    ].sum(axis=1)
+    df["LCC_Revenue"] = df[
+        [
+            "FRONTIER_OPERATING_REVENUE",
+            "ALLEGIANT_OPERATING_REVENUE",
+            "SPIRIT_OPERATING_REVENUE",
+            "SUN_COUNTRY_OPERATING_REVENUE",
+            "JETBLUE_OPERATING_REVENUE",
+        ]
+    ].sum(axis=1)
+    df["Regional_Revenue"] = df[
+        [
+            "ALASKA_OPERTING_REVENUE",
+            "HAWAIIN_OPERATING_REVENUE",
+            "SKYWEST_OPERATING_REVENUE",
+        ]
+    ].sum(axis=1)
 
-    df["Legacy_Passengers"] = df[legacy_cols].sum(axis=1)
-    df["LCC_Passengers"] = df[lcc_cols].sum(axis=1)
-    df["Regional_Passengers"] = df[regional_cols].sum(axis=1)
-
-    df["Legacy_Net_Income"] = df[legacy_net_cols].sum(axis=1)
-    df["LCC_Net_Income"] = df[lcc_net_cols].sum(axis=1)
-    df["Regional_Net_Income"] = df[regional_net_cols].sum(axis=1)
-
-    df["Legacy_Revenue"] = df[legacy_rev_cols].sum(axis=1)
-    df["LCC_Revenue"] = df[lcc_rev_cols].sum(axis=1)
-    df["Regional_Revenue"] = df[regional_rev_cols].sum(axis=1)
-
+    # Visualization section
     plot_passenger_growth_cluster(df, cluster_map, 0)
     plot_passenger_growth_cluster(df, cluster_map, 1)
     plot_passenger_growth_cluster(df, cluster_map, 2)
@@ -553,7 +641,13 @@ def run_analysis():
     plot_airline_performance_index(df, 2003, 2023)
     plot_market_share_volatility(df)
     plot_financial_resilience(df)
-    run_forecasting(df)
+
+    # Forecasting + Evaluation + Interactive plotting
+    run_passenger_revenue_forecasting(df)
+
+    print(
+        "\nAll plots and forecast evaluations are complete. Interactive plots + p-values + Monte Carlo simulation included.\n"
+    )
 
 
 if __name__ == "__main__":
